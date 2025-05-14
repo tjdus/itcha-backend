@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from apps.board.models import RecruitmentField, Recruitment
+from apps.board.serializers.application import ApplicationListSerializer
 from apps.board.serializers.field import FieldSerializer
 from apps.board.serializers.recruitment_field import RecruitmentFieldCreateSerializer
 from apps.core.common.serializers.base_serializerl import BaseSerializer
@@ -57,6 +58,10 @@ class RecruitmentUpdateSerializer(serializers.ModelSerializer):
 
         return recruitment
 
-
+class RecruitmentDetailSerializer(serializers.ModelSerializer):
+    applications = ApplicationListSerializer(source='application_set', many=True, read_only=True)
+    class Meta:
+        model = Recruitment
+        fields = ['id', 'type', 'title', 'content', 'deadline', 'is_completed', 'applications']
 
 
