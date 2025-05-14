@@ -1,0 +1,11 @@
+.idea/
+
+__pycache__/
+*.pyc
+
+*.lock
+
+*.log
+
+.env
+.env*
