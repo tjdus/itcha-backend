@@ -37,26 +37,31 @@ class RecruitmentCreateSerializer(serializers.ModelSerializer):
 
         return recruitment
 
-class RecruitmentUpdateSerializer(serializers.ModelSerializer):
-    fields = RecruitmentFieldCreateSerializer(many=True, required=False)
-    class Meta:
-        model = Recruitment
-        fields = ['type', 'title', 'content', 'deadline', 'is_completed', 'fields']
-
     def update(self, instance, validated_data):
         fields_data = validated_data.pop('fields', None)
-        recruitment = instance
+
         if fields_data:
-            RecruitmentField.objects.filter(recruitment=recruitment).delete()
-            recruitment_fields = [
-                RecruitmentField(recruitment=recruitment, **field_data)
-                for field_data in fields_data
-            ]
-            RecruitmentField.objects.bulk_create(recruitment_fields)
+            existing_fields = {field.field.id: field for field in instance.recruitment_field_set.all()}
+            recruitment_fields = []
+            for field_data in fields_data:
+                field_id = field_data.get('field').id
+                if field_id in existing_fields:
+                    field_instance = existing_fields.pop(field_id)
+                    field_instance.required_count = field_data.get('required_count', field_instance.required_count)
+                    field_instance.save()
+                else:
+                    recruitment_fields.append(RecruitmentField(recruitment=instance, **field_data))
 
-        recruitment = super().update(instance=instance, validated_data=validated_data)
+            if recruitment_fields:
+                RecruitmentField.objects.bulk_create(recruitment_fields)
 
-        return recruitment
+            instance.recruitment_field_set.filter(id__in=existing_fields.keys()).delete()
+
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+
+        return instance
 
 class RecruitmentDetailSerializer(serializers.ModelSerializer):
     applications = ApplicationListSerializer(source='application_set', many=True, read_only=True)

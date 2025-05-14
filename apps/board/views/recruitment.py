@@ -7,8 +7,7 @@ from rest_framework.views import APIView
 
 from apps.board.filtersets.recruitment import RecruitmentFilter
 from apps.board.models import Recruitment
-from apps.board.serializers.recruitment import RecruitmentSerializer, RecruitmentCreateSerializer, \
-    RecruitmentUpdateSerializer, RecruitmentDetailSerializer
+from apps.board.serializers.recruitment import RecruitmentSerializer, RecruitmentCreateSerializer, RecruitmentDetailSerializer
 from apps.core.common.pagination import BasePagination
 
 class RecruitmentListView(APIView):
@@ -65,7 +64,7 @@ class RecruitmentDetailView(APIView):
 
     def patch(self, request, pk):
         recruitment = self.get_object(pk)
-        serializer = RecruitmentUpdateSerializer(recruitment, data=request.data, partial=True)
+        serializer = RecruitmentSerializer(recruitment, data=request.data, partial=True)
 
         if serializer.is_valid():
             instance = serializer.save(updated_by=request.user)

@@ -23,10 +23,11 @@ class ApplicationListSerializer(serializers.ModelSerializer):
 
 class ApplicationDetailSerializer(serializers.ModelSerializer):
     applicant = MemberSerializer(read_only=True)
+    application_field = ApplicationFieldInfoSerializer(source='application_field_set', read_only=True, many=True)
 
     class Meta:
         model = Application
-        fields = ['id', 'applicant', 'recruitment', 'content', 'created_at', 'updated_at']
+        fields = ['id', 'applicant', 'recruitment', 'content', 'created_at', 'updated_at', 'application_field']
 
 class ApplicationSerializer(serializers.ModelSerializer):
     fields = ApplicationFieldSerializer(many=True)

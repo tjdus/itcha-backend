@@ -67,7 +67,7 @@ class ApplicationDetailView(APIView):
         serializer = ApplicationSerializer(application, data=request.data, partial=True)
 
         if serializer.is_valid():
-            instance = serializer.save(updated_by=request.user)
+            instance = serializer.save()
             return Response(ApplicationDetailSerializer(instance).data, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
