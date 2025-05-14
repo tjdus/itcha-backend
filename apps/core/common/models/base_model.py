@@ -5,7 +5,7 @@ from apps.core.common.models.timestamped_model import TimestampedModel
 from config import settings
 
 
-class BaseModel(SoftDeletableModel, TimestampedModel):
+class BaseModel(TimestampedModel):
     """
     Tracks the user who created and last modified an object.
     """
