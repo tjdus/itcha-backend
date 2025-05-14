@@ -11,3 +11,7 @@ class RecruitmentField(TimestampedModel):
     class Meta:
         db_table = 'recruitment_field'
         verbose_name = 'Recruitment field'
+        unique_together = ('recruitment', 'field')
+        indexes = [
+            models.Index(fields=['recruitment', 'field']),
+        ]
