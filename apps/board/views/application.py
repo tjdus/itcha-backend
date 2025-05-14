@@ -7,7 +7,8 @@ from rest_framework.views import APIView
 
 from apps.board.filtersets.application import ApplicationFilter
 from apps.board.models import Application
-from apps.board.serializers.application import ApplicationDetailSerializer, ApplicationSerializer
+from apps.board.serializers.application import ApplicationDetailSerializer, ApplicationSerializer, \
+    ApplicationListSerializer
 from apps.core.common.pagination import BasePagination
 
 class ApplicationListView(APIView):
@@ -20,7 +21,7 @@ class ApplicationListView(APIView):
     ordering_fields = ['created_at']
 
     def get_queryset(self):
-        queryset = Application.objects.prefetch_related('application_field_set').select_related('created_by', 'updated_by').all()
+        queryset = Application.objects.prefetch_related('application_field_set').all()
         return queryset
 
     def filter_queryset(self, queryset):
@@ -43,7 +44,7 @@ class ApplicationListView(APIView):
         queryset = self.get_queryset()
         filtered_queryset = self.filter_queryset(queryset)
         paginated_queryset, paginator = self.paginate_queryset(filtered_queryset)
-        serializer = ApplicationDetailSerializer(paginated_queryset, many=True)
+        serializer = ApplicationListSerializer(paginated_queryset, many=True)
         return paginator.get_paginated_response(serializer.data)
 
     def post(self, request):

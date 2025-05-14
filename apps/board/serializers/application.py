@@ -3,7 +3,6 @@ from rest_framework import serializers
 from apps.board.models import ApplicationField, Application
 from apps.board.serializers.application_field import ApplicationFieldSerializer
 from apps.board.serializers.field import FieldSerializer
-from apps.core.common.serializers.base_serializerl import BaseSerializer
 from apps.core.serializers.member import MemberSerializer
 
 
@@ -16,10 +15,11 @@ class ApplicationFieldInfoSerializer(serializers.ModelSerializer):
 
 class ApplicationListSerializer(serializers.ModelSerializer):
     applicant = MemberSerializer(read_only=True)
+    fields = ApplicationFieldInfoSerializer(source='application_field_set', many=True, read_only=True)
 
     class Meta:
         model = Application
-        fields = ['id', 'applicant', 'content', 'created_at', 'updated_at']
+        fields = ['id', 'applicant', 'fields', 'content', 'created_at', 'updated_at']
 
 class ApplicationDetailSerializer(serializers.ModelSerializer):
     applicant = MemberSerializer(read_only=True)
