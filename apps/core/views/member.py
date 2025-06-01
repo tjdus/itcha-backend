@@ -38,7 +38,7 @@ class MemberListView(APIView):
         queryset = self.get_queryset()
         filtered_queryset = self.filter_queryset(queryset)
         serializer = MemberSerializer(filtered_queryset, many=True)
-        return serializer.data
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class MemberDetailView(APIView):
